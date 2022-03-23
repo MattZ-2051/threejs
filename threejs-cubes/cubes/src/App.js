@@ -1,16 +1,37 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Canvas, useFrame } from 'react-three-fiber';
+import { MeshWobbleMaterial, OrbitControls } from '@react-three/drei';
+import { useSpring, animated } from 'react-spring';
 import './App.scss';
 
-function Box({ position, args, color }) {
+function Box({ position, args, color, speed }) {
   const mesh = useRef(null);
+  const [expand, setExpand] = useState(false);
+  const props = useSpring({
+    scale: expand ? [1.4, 1.4, 1.4] : [1, 1, 1],
+  });
+
+  const handleExpansion = () => {
+    setExpand(!expand);
+  };
 
   useFrame(() => (mesh.current.rotation.x = mesh.current.rotation.y += 0.01));
 
   return (
-    <mesh ref={mesh} position={position} castShadow={true}>
+    <mesh
+      onClick={handleExpansion}
+      ref={mesh}
+      position={position}
+      castShadow={true}
+      style={props.scale}
+    >
       <boxBufferGeometry attach="geometry" args={args} />
-      <meshStandardMaterial attach="material" color={color} />
+      <MeshWobbleMaterial
+        attach="material"
+        color={color}
+        speed={speed}
+        factor={1}
+      />
     </mesh>
   );
 }
@@ -45,12 +66,18 @@ function App() {
             position={[0, -3, 0]}
           >
             <planeBufferGeometry attach="geometry" args={[100, 100]} />
-            <shadowMaterial attach="material" opacity={0.3} />
+            <shadowMaterial attach="material" color="black" opacity={0.3} />
           </mesh>
+          <Box
+            position={[0, 1, 0]}
+            args={[3, 2, 1]}
+            color="lightblue"
+            speed={2}
+          />
+          <Box position={[-2, 1, -5]} color="red" speed={0.5} />
+          <Box position={[5, 1, -2]} color="green" speed={6} />
         </group>
-        <Box position={[0, 1, 0]} args={[3, 2, 1]} color="lightblue" />
-        <Box position={[-2, 1, -5]} color="red" />
-        <Box position={[5, 1, -2]} color="green" />
+        <OrbitControls />
       </Canvas>
     </>
   );
