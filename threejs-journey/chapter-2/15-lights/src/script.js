@@ -22,6 +22,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 const directionalLight = new THREE.DirectionalLight('blue', 0.3);
 scene.add(ambientLight);
 scene.add(directionalLight);
+directionalLight.castShadow = true;
 
 const pointLight = new THREE.PointLight(0xffffff, 0.5);
 pointLight.position.x = 2;
@@ -39,6 +40,7 @@ material.roughness = 0.4;
 // Objects
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material);
 sphere.position.x = -1.5;
+sphere.castShadow = true;
 
 const cube = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), material);
 
@@ -51,6 +53,7 @@ torus.position.x = 1.5;
 const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material);
 plane.rotation.x = -Math.PI * 0.5;
 plane.position.y = -0.65;
+plane.receiveShadow = true;
 
 scene.add(sphere, cube, torus, plane);
 
@@ -103,6 +106,7 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
 
 /**
  * Animate
